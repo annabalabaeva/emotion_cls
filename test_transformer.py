@@ -1,9 +1,9 @@
+import torch
 import numpy as np
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 from transformers import pipeline
 
 from datasets import load_dataset
-from tabulate import tabulate
 from tqdm import tqdm
 
 from test import eval_metrics
@@ -17,7 +17,7 @@ def run_test(model_name, dataset):
     model = AutoModelForSequenceClassification.from_pretrained(model_name)
 
     emotion_analysis = \
-        pipeline("sentiment-analysis", model=model, tokenizer=tokenizer)
+        pipeline("sentiment-analysis", model=model, tokenizer=tokenizer, device='cuda:0')
 
     y_pred_list = np.zeros(len(dataset), np.int32)
     y_true_list = np.zeros(len(dataset), np.int32)
@@ -28,8 +28,7 @@ def run_test(model_name, dataset):
         y_pred_list[i: i + BATCH_SIZE] = [int(name[-1]) for name in y_pred]
         y_true_list[i: i + BATCH_SIZE] = y_true
 
-    return accuracy(y_true_list, y_pred_list), \
-        prec_recall_f1(y_true_list, y_pred_list, by_class=True)
+    return y_true_list, y_pred_list
 
 
 def main():
@@ -38,13 +37,9 @@ def main():
 
     print("\nTesting models...\n")
     model_name = "Vasanth/bert-base-uncased-finetuned-emotion"
-    acc, stat = run_test(model_name, dataset)
+    y_true, y_pred = run_test(model_name, dataset)
 
-    print(f"Accuracy: {acc:4f}")
-    stat = [[n] + list(s) for n, s in zip(CLASS_NAMES, stat)]
-    print(tabulate(
-        stat, headers=["class", "Precision", "Recall", "F1-score", "Support"],
-        tablefmt="github", floatfmt=("s", ".3f", ".3f", ".3f", ".0f")))
+    metrics_val = eval_metrics(y_pred, y_true, print_metrics=True)
 
 
 if __name__ == "__main__":
