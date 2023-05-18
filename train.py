@@ -7,7 +7,7 @@ import json
 
 from dataset_tweets import TweetsDataset, collate_texts
 from rnn_model import LstmClassifier
-from test import eval_metrics
+from metrics import eval_metrics
 
 
 def train(config, model, dataloaders):

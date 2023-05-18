@@ -10,10 +10,12 @@
     "embedding_dim": 256,
     "hidden_dim": 64,
     "dropout": 0.2,
-    "n_layers": 2,
+    "n_layers": 3,
     "bidirectional": true
   },
 
-  "save": "models/bilstm_2layers.pth",
-  "vocab": "models/vocab_bilstm_2layers.pth"
+  "save": "models/bilstm_3layers.pth",
+  "vocab": "models/vocab_bilstm_3layers.pkl",
+
+  "half": "models/half_bilstm_3layers.pth"
 }
