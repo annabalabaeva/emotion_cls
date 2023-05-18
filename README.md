@@ -1,5 +1,6 @@
 # Emotions classification
 __Disclaimer__
+
 This is a toy project: 
 - it was done in ~10 h and needs a lot of upgrades for acceptable quality.
 - model was train on subset of 16k images due to limitations in time and GPU resources.
